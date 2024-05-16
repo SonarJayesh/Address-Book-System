@@ -1,14 +1,13 @@
 package com.jayesh.addressbook;
 
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AddressBookMain {
     Scanner scanner = new Scanner(System.in);
-    Contacts contacts = new Contacts();
-
-    public void addContacts(){
-
+    ArrayList<Contacts> contactList = new ArrayList<>();
+    public void addContacts() {
+        Contacts contacts = new Contacts();
         System.out.println("Enter the First Name:");
         contacts.setFirstName(scanner.next());
         System.out.println("Enter the Last Name:");
@@ -25,30 +24,29 @@ public class AddressBookMain {
         contacts.setPhoneNumber(scanner.next());
         System.out.println("Enter the Email");
         contacts.setEmail(scanner.next());
-
+        contactList.add(contacts);
     }
 
-   public void displayContacts(){
-        if(contacts == null){
-            System.out.println("Contacts is not Available");
-        }
-        else {
-            System.out.println("First Name:"+contacts.getFirstName());
-            System.out.println("Last Name:"+contacts.getLastName());
-            System.out.println("Address:"+contacts.getAddress());
-            System.out.println("City:"+contacts.getCity());
-            System.out.println("State:"+contacts.getState());
-            System.out.println("Zip Code:"+contacts.getZip());
-            System.out.println("Phone Number:"+contacts.getPhoneNumber());
-            System.out.println("Email:"+contacts.getEmail());
-        }
+    public void displayContacts() {
+
+       if(!contactList.isEmpty()){
+           for (int i =0; i<contactList.size();i++){
+
+               Contacts contacts = contactList.get(i);
+               System.out.println(contacts.toString());
+
+           }
+       }else {
+           System.out.println("Contact is Empty");
+       }
     }
 
-    public void editContacts(){
-        System.out.println("Enter the First Name to Edit Contact");
-        String fName = scanner.next();
-        if(fName.equals(contacts.getFirstName())) {
-            System.out.println("Contact Found.");
+    public void editContacts() {
+
+        Contacts contacts = checkContactsExist();
+
+        if (contacts != null) {
+            System.out.println("Contact is Found.");
 
             System.out.println("Enter the Last Name:");
             contacts.setLastName(scanner.next());
@@ -64,34 +62,77 @@ public class AddressBookMain {
             contacts.setPhoneNumber(scanner.next());
             System.out.println("Enter the Email");
             contacts.setEmail(scanner.next());
-
-        }else{
-            System.out.println("Given Name of Contact is Not Found");
         }
     }
 
-    public void deleteContacts(){
-        System.out.println("Enter the First Name to delete the Contact");
-        String fName = scanner.next();
-                if(fName.equals(contacts.getFirstName())) {
-                    System.out.println("Contact is Found.");
-                    contacts = null;
+    public void deleteContacts() {
+       Contacts contacts = checkContactsExist();
 
-                }else {
-                    System.out.println("Given Name of Contact is Not Found");
-                }
+       if (contacts != null){
+           contactList.remove(contacts);
+           System.out.println("Contact is Deleted");
+       }
 
     }
+
+    public Contacts checkContactsExist() {
+
+        if (!contactList.isEmpty()) {
+            System.out.println("Enter the First Name ");
+            String fName = scanner.next();
+
+            boolean found = false;
+
+            Contacts contacts = null;
+
+            for (int i = 0; i < contactList.size(); i++) {
+                contacts = contactList.get(i);
+
+                if (fName.equals(contacts.getFirstName())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                System.out.println("Contact is not Available in AddressBook ");
+                return null;
+            }
+
+            return contacts;
+
+        } else {
+            System.out.println("Contact is Empty");
+            return  null;
+        }
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Welcome to Address Book System");
+        int userChoice;
         AddressBookMain addressBookMain = new AddressBookMain();
-        addressBookMain.addContacts();
-        addressBookMain.displayContacts();
-        addressBookMain.editContacts();
-        addressBookMain.displayContacts();
-        addressBookMain.deleteContacts();
-        addressBookMain.displayContacts();
+            do {
+                System.out.println(" 1.Add_Contact \n 2.Edit_Contact \n 3.Delete_Contacts \n 4.Display_Contacts \n 5.Exit");
+                System.out.println("Enter the Choice Operation Number");
 
+                userChoice = addressBookMain.scanner.nextInt() ;
+                    switch (userChoice) {
+                        case 1:
+                            addressBookMain.addContacts();
+                            break;
+
+                        case 2:
+                           addressBookMain.editContacts();
+                            break;
+
+                        case 3:
+                           addressBookMain.deleteContacts();
+                            break;
+
+                        case 4:
+                            addressBookMain.displayContacts();
+                            break;
+                    }
+            }while(userChoice<=4);
     }
 }
